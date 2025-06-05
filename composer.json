@@ -1,0 +1,6 @@
+{
+    "require": {
+        "catfan/medoo": "^2.2",
+        "vlucas/phpdotenv": "^5.6"
+    }
+}

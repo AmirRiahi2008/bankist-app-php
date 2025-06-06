@@ -7,6 +7,10 @@ class Authorization
     public static function getUserByUsername($username)
     {
         global $database;
+
+        if (empty($username))
+            return null;
+
         $result = $database->get("users", "*", [
             "name" => $username
         ]);
@@ -22,7 +26,7 @@ class Authorization
             $_SESSION["login"] = $user;
             return true;
         }
-        return "Username Or Password Is Incorrect !!!";
+        return "Invalid username or password.";
     }
     public static function curUserId()
     {

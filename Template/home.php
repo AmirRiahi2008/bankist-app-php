@@ -105,9 +105,9 @@
     </p>
   </main>
 
-  <!-- <footer>
-      &copy; by Jonas Schmedtmann. Don't claim as your own :)
-    </footer> -->
+  <footer>
+    &copy; by Amirreza Riahi. Don't claim as your own :)
+  </footer>
 
   <script src=<?= siteUri("./assets/js/controller.js?v=") . rand(99, 999999999) ?>></script>
 </body>

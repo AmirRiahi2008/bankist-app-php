@@ -1,3 +1,13 @@
+<?php
+
+if (!empty($_SESSION['alert'])) {
+  $alertMessage = $_SESSION['alert'];
+  echo "<script>alert('$alertMessage');</script>";
+  unset($_SESSION['alert']);
+}
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,24 +26,36 @@
 <body>
   <!-- TOP NAVIGATION -->
   <nav>
-    <p class="welcome">Log in to get started</p>
+    <p class="welcome">
+      <?= isset($_SESSION["login"]) ? "Welcome back, {$_SESSION['login']['name']}" : "Log in to get started" ?>
+    </p>
+
     <img src="./assets/imgs/logo.png" alt="Logo" class="logo" />
-    <form class="login">
-      <input type="text" placeholder="user" class="login__input login__input--user" />
-      <!-- In practice, use type="password" -->
-      <input type="text" placeholder="PIN" maxlength="4" class="login__input login__input--pin" />
-      <button class="login__btn">&rarr;</button>
+    <form class="login" method="POST" action="<?= siteUri("auth.php?action=login") ?>">
+      <input type="text" name="username" placeholder="user" class="login__input login__input--user" />
+      <input type="text" name="password" placeholder="PIN" maxlength="4" class="login__input login__input--pin" />
+      <button type="submit" class="login__btn">&rarr;</button>
     </form>
   </nav>
 
-  <main class="app">
+  <main class="app" style="opacity:<?= isset($_SESSION["login"]) ? 1 : 0 ?>;">
     <!-- BALANCE -->
     <div class="balance">
       <div>
         <p class="balance__label">Current balance</p>
+
         <p class="balance__date">
-          As of <span class="date">05/03/2037</span>
+          As of <span class="date">
+            <?php if (isset($_SESSION["login"])): ?>
+              <script>
+                const now = new Date();
+                const formatted = now.toLocaleDateString('en-GB') + ", " + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+                document.currentScript.parentElement.textContent = formatted;
+              </script>
+            <?php endif; ?>
+          </span>
         </p>
+
       </div>
       <p class="balance__value">0000€</p>
     </div>
@@ -105,11 +127,9 @@
     </p>
   </main>
 
-  <footer>
-    &copy; by Amirreza Riahi. Don't claim as your own :)
-  </footer>
-
   <script src=<?= siteUri("./assets/js/controller.js?v=") . rand(99, 999999999) ?>></script>
+
+
 </body>
 
 </html>

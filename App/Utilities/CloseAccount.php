@@ -9,26 +9,26 @@ class CloseAccount
     public static function deleteAcc($username, $password)
     {
         if ($password == null || $username === null || empty($password) || empty($username)) {
-            echo "<script type='text/javascript'>alert('Please input');</script>";
+            $_SESSION['alert'] = 'Username And Password Are Required !!';
             return;
         }
         $user = Authorization::getUserByUsername($username);
         if (!$user || $user === null) {
-            echo "<script>alert('User not found.');</script>";
+            $_SESSION['alert'] = 'User Not Found';
             return;
         }
         if (!Authorization::isLogged()) {
-            echo "<script>alert('You must be logged in.');</script>";
+            $_SESSION['alert'] = 'You Must Logged in';
             return;
         }
         if ($_SESSION["login"]["name"] === $user["name"] && $_SESSION["login"]["password"] == $user["password"]) {
             global $database;
             $database->delete("users", ["id" => $user["id"]]);
             unset($_SESSION["login"]);
-            echo "<script>alert('Your account has been deleted :)');</script>";
+            $_SESSION['alert'] = 'Your Account Deleted Successfully';
             redirect();
         } else {
-            echo "<script>alert('Incorrect username or password.');</script>";
+            $_SESSION['alert'] = 'Incorrect Password Or Username';
             return;
         }
 

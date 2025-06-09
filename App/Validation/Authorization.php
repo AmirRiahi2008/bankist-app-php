@@ -1,6 +1,6 @@
 <?php
 namespace App\Validation;
-session_start();
+
 class Authorization
 {
     private $user;
@@ -28,6 +28,26 @@ class Authorization
         }
         return "Invalid username or password.";
     }
+
+    public static function register($username, $password)
+    {
+        global $database;
+        $result = $database->insert("users", [
+            "name" => $username,
+            "password" => $password
+        ]);
+        if ($result) {
+            $userRegistered = $database->get("accounts_details", "*", ["name" => $username, "password" => $password]);
+            $database->insert("accounts_details", [
+                "user_id" => $userRegistered["id"],
+                "balance" => 0,
+                "out" => 0,
+                "in" => 0,
+                "interest" => 0,
+                "currency" => "EUR"
+            ]);
+        }
+    }
     public static function curUserId()
     {
         return $_SESSION["login"]["id"] ?? null;
@@ -39,5 +59,9 @@ class Authorization
     public static function isLogged()
     {
         return isset($_SESSION["login"]);
+    }
+    public static function logout()
+    {
+        unset($_SESSION["login"]);
     }
 }

@@ -46,7 +46,9 @@ class Authorization
                 "interest" => 0,
                 "currency" => "EUR"
             ]);
+            return true;
         }
+        return false;
     }
     public static function curUserId()
     {

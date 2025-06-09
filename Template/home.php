@@ -45,45 +45,37 @@ if (!empty($_SESSION['alert'])) {
         <p class="balance__label">Current balance</p>
 
         <p class="balance__date">
-          As of <span class="date">
-            <?php if (isset($_SESSION["login"])): ?>
-              <script>
-                const now = new Date();
-                const formatted = now.toLocaleDateString('en-GB') + ", " + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-                document.currentScript.parentElement.textContent = formatted;
-              </script>
-            <?php endif; ?>
-          </span>
+          As of <span class="date"></span>
         </p>
 
       </div>
-      <p class="balance__value">0000€</p>
+      <p class="balance__value"><?= $accDetails->getBalance() ?></p>
     </div>
 
     <!-- MOVEMENTS -->
     <div class="movements">
-      <div class="movements__row">
-        <div class="movements__type movements__type--deposit">2 deposit</div>
-        <div class="movements__date">3 days ago</div>
-        <div class="movements__value">4 000€</div>
-      </div>
-      <div class="movements__row">
-        <div class="movements__type movements__type--withdrawal">
-          1 withdrawal
+      <?php foreach ($movements as $key => $mov): ?>
+        <div class="movements__row">
+          <div class="movements__type movements__type--<?= $mov["type"] === "deposit" ? "deposit" : "withdrawal" ?>">
+            <?= count($movements) - $key ?> deposit
+          </div>
+          <div class="movements__date"><?= $mov["created_at"] ?></div>
+          <div class="movements__value">
+            <?= $mov["type"] === "withdrawal" ? "-" . $accDetails->formatCurrency($mov["amount"], $accDetails->getCurrency()) : $accDetails->formatCurrency($mov["amount"], $accDetails->getCurrency()) ?>
+          </div>
         </div>
-        <div class="movements__date">24/01/2037</div>
-        <div class="movements__value">-378€</div>
-      </div>
+      <?php endforeach ?>
+
     </div>
 
     <!-- SUMMARY -->
     <div class="summary">
       <p class="summary__label">In</p>
-      <p class="summary__value summary__value--in">0000€</p>
+      <p class="summary__value summary__value--in"><?= $accDetails->getIn() ?></p>
       <p class="summary__label">Out</p>
-      <p class="summary__value summary__value--out">0000€</p>
+      <p class="summary__value summary__value--out"><?= $accDetails->getOut() ?></p>
       <p class="summary__label">Interest</p>
-      <p class="summary__value summary__value--interest">0000€</p>
+      <p class="summary__value summary__value--interest"><?= $accDetails->getInterest() ?></p>
       <button class="btn--sort">&downarrow; SORT</button>
     </div>
 
@@ -120,16 +112,12 @@ if (!empty($_SESSION['alert'])) {
         <label class="form__label">Confirm PIN</label>
       </form>
     </div>
-
     <!-- LOGOUT TIMER -->
     <p class="logout-timer">
       You will be logged out in <span class="timer">05:00</span>
     </p>
   </main>
-
-  <script src=<?= siteUri("./assets/js/controller.js?v=") . rand(99, 999999999) ?>></script>
-
-
+  <script src=<?= siteUri("./assets/scripts/script.js?v=") . rand(99, 999999999) ?>></script>
 </body>
 
 </html>

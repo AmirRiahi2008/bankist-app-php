@@ -13,9 +13,9 @@ class Movements
         $result = null;
         if (isset($_SESSION["login"]))
             $result = $database->select("movements", "*", [
-  "user_id" => $userId,
-  "ORDER" => ["id" => "DESC"]
-]);
+                "user_id" => $userId,
+                "ORDER" => ["id" => "DESC"]
+            ]);
 
         return $result;
     }

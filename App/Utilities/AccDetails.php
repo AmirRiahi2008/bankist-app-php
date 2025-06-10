@@ -7,7 +7,7 @@ use NumberFormatter;
 class AccDetails
 {
     private $database;
-    private $accountDetails;
+    private static $accountDetails;
 
     private $currencySymbols = [
         'USD' => '$',
@@ -26,47 +26,93 @@ class AccDetails
         $this->database = $database;
 
         if (isset($_SESSION["login"])) {
-            $this->accountDetails = $this->database->get("accounts_details", "*", [
+            self::$accountDetails = $this->database->get("accounts_details", "*", [
                 "user_id" => $_SESSION["login"]["id"]
             ]);
         } else {
-            $this->accountDetails = null;
+            self::$accountDetails = null;
         }
     }
 
     public function getBalance()
     {
-        if ($this->accountDetails === null)
-            return null;
-        return $this->formatCurrency($this->accountDetails["balance"], $this->getCurrency());
+        if (isset($_SESSION["login"])) {
+            if (self::$accountDetails === null)
+                return null;
+            return $this->formatCurrency(array_reduce(
+                Movements::getMovements($_SESSION["login"]["id"]),
+                fn($carry, $mov) =>
+                $carry + (float) $mov['amount']
+                ,
+                0
+            ), self::$accountDetails["currency"]);
+
+
+        }
     }
 
     public function getIn()
     {
-        if ($this->accountDetails === null)
-            return null;
-        return $this->formatCurrency($this->accountDetails["in"], $this->getCurrency());
+        if (isset($_SESSION["login"])) {
+            $movements = Movements::getMovements($_SESSION["login"]["id"]);
+            $sum = 0;
+            foreach ($movements as $mov) {
+                if ((float) $mov['amount'] > 0) {
+                    $sum += (float) $mov['amount'];
+                }
+            }
+            return $this->formatCurrency($sum, self::$accountDetails["currency"]);
+
+        }
     }
+
 
     public function getOut()
     {
-        if ($this->accountDetails === null)
-            return null;
-        return $this->formatCurrency($this->accountDetails["out"], $this->getCurrency());
+        if (isset($_SESSION["login"])) {
+            $movements = Movements::getMovements($_SESSION["login"]["id"]);
+            $sum = 0;
+            foreach ($movements as $mov) {
+                $amount = (float) $mov['amount'];
+                if ($amount < 0) {
+                    $sum += $amount;
+                }
+            }
+            return $this->formatCurrency(abs($sum), $this->getCurrency());
+        }
     }
 
-    public function getInterest()
+
+    public function getInterest($interestRate = 1.2)
     {
-        if ($this->accountDetails === null)
-            return null;
-        return $this->formatCurrency($this->accountDetails["interest"], $this->getCurrency());
+        $movements = Movements::getMovements($_SESSION["login"]["id"]);
+        $interest = array_reduce(
+            array_filter(
+                array_map(function ($mov) use ($interestRate) {
+                    $amount = (float) $mov['amount'];
+                    if ($amount > 0) {
+                        return ($amount * $interestRate) / 100;
+                    }
+                    return 0;
+                }, $movements),
+                function ($int) {
+                    return $int >= 1;
+                }
+            ),
+            function ($carry, $int) {
+                return $carry + $int;
+            },
+            0
+        );
+        return $this->formatCurrency($interest, self::$accountDetails["currency"]);
     }
+
 
     public function getCurrency()
     {
-        if ($this->accountDetails === null)
+        if (self::$accountDetails === null)
             return null;
-        return $this->accountDetails["currency"];
+        return self::$accountDetails["currency"];
     }
 
     private function getCurrencySymbol(string $currency): string
@@ -87,5 +133,10 @@ class AccDetails
 
         $symbol = $this->getCurrencySymbol($currency);
         return $symbol . number_format($amount, 2);
+    }
+
+    public function getAccDetail()
+    {
+        return self::$accountDetails;
     }
 }

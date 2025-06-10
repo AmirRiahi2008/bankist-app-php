@@ -49,7 +49,7 @@ if (!empty($_SESSION['alert'])) {
         </p>
 
       </div>
-      <p class="balance__value"><?= $accDetails->getBalance() ?></p>
+      <p class="balance__value"><?= $accDetails->getBalance() ?? 0 ?></p>
     </div>
 
     <!-- MOVEMENTS -->
@@ -61,7 +61,7 @@ if (!empty($_SESSION['alert'])) {
           </div>
           <div class="movements__date"><?= $mov["created_at"] ?></div>
           <div class="movements__value">
-            <?= $mov["type"] === "withdrawal" ? "-" . $accDetails->formatCurrency($mov["amount"], $accDetails->getCurrency()) : $accDetails->formatCurrency($mov["amount"], $accDetails->getCurrency()) ?>
+            <?= htmlspecialchars($accDetails->formatCurrency($mov["amount"], $accDetails->getCurrency()))  ?>
           </div>
         </div>
       <?php endforeach ?>
@@ -71,11 +71,11 @@ if (!empty($_SESSION['alert'])) {
     <!-- SUMMARY -->
     <div class="summary">
       <p class="summary__label">In</p>
-      <p class="summary__value summary__value--in"><?= $accDetails->getIn() ?></p>
+      <p class="summary__value summary__value--in"><?= $accDetails->getIn() ?? 0 ?></p>
       <p class="summary__label">Out</p>
-      <p class="summary__value summary__value--out"><?= $accDetails->getOut() ?></p>
+      <p class="summary__value summary__value--out"><?= $accDetails->getOut() ?? 0 ?></p>
       <p class="summary__label">Interest</p>
-      <p class="summary__value summary__value--interest"><?= $accDetails->getInterest() ?></p>
+      <p class="summary__value summary__value--interest"><?= $accDetails->getInterest() ?? 0 ?></p>
       <button class="btn--sort">&downarrow; SORT</button>
     </div>
 

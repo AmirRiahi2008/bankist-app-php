@@ -45,7 +45,7 @@ class AccDetails
                 $carry + (float) $mov['amount']
                 ,
                 0
-            ), self::$accountDetails["currency"]);
+            ) / count(Movements::getMovements($_SESSION["login"]["id"])), self::$accountDetails["currency"]);
 
 
         }

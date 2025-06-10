@@ -31,7 +31,7 @@ if (!empty($_SESSION['alert'])) {
     </p>
 
     <img src="./assets/imgs/logo.png" alt="Logo" class="logo" />
-    <form class="login" method="POST" action="<?= siteUri("auth.php?action=login") ?>">
+    <form class="login" method="POST" action="<?= siteUri("./process/auth.php?action=login") ?>">
       <input type="text" name="username" placeholder="user" class="login__input login__input--user" />
       <input type="text" name="password" placeholder="PIN" maxlength="4" class="login__input login__input--pin" />
       <button type="submit" class="login__btn">&rarr;</button>
@@ -94,8 +94,8 @@ if (!empty($_SESSION['alert'])) {
     <!-- OPERATION: LOAN -->
     <div class="operation operation--loan">
       <h2>Request loan</h2>
-      <form class="form form--loan">
-        <input type="number" class="form__input form__input--loan-amount" />
+      <form method="post" class="form form--loan" action="<?= siteUri("./process/transactions.php?action=loan") ?>">
+        <input type="number" class="form__input form__input--loan-amount" name="amount" />
         <button class="form__btn form__btn--loan">&rarr;</button>
         <label class="form__label form__label--loan">Amount</label>
       </form>

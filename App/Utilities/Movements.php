@@ -5,6 +5,11 @@ class Movements
     public static function addMovement($amount, $type, $userId)
     {
         global $database;
+        return $database->insert("movements", [
+            "user_id" => $userId,
+            "type" => $type,
+            "amount" => $amount
+        ]);
     }
 
     public static function getMovements($userId)

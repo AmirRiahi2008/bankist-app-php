@@ -31,10 +31,10 @@ if (!empty($_SESSION['alert'])) {
     </p>
 
     <img src="./assets/imgs/logo.png" alt="Logo" class="logo" />
-    <form class="login" method="POST" action="<?= siteUri("./process/auth.php?action=login") ?>">
+    <form class="login" method="POST" action="<?= siteUri("process/auth.php?action=login") ?>">
       <input type="text" name="username" placeholder="user" class="login__input login__input--user" />
       <input type="text" name="password" placeholder="PIN" maxlength="4" class="login__input login__input--pin" />
-      <button type="submit" class="login__btn">&rarr;</button>
+      <button type="submit" name="loginSubmit" class="login__btn">&rarr;</button>
     </form>
   </nav>
 
@@ -82,10 +82,10 @@ if (!empty($_SESSION['alert'])) {
     <!-- OPERATION: TRANSFERS -->
     <div class="operation operation--transfer">
       <h2>Transfer money</h2>
-      <form class="form form--transfer">
-        <input type="text" class="form__input form__input--to" />
-        <input type="number" class="form__input form__input--amount" />
-        <button class="form__btn form__btn--transfer">&rarr;</button>
+      <form method="POST" id="transferForm" action="<?= siteUri("process/transactions.php?action=transfer") ?>" class="form form--transfer">
+        <input type="text" name="transferTo" class="form__input form__input--to" />
+        <input type="number" name="amount" class="form__input form__input--amount" />
+        <button type="submit" name="transferSubmit" class="form__btn form__btn--transfer">&rarr;</button>
         <label class="form__label">Transfer to</label>
         <label class="form__label">Amount</label>
       </form>
@@ -96,7 +96,7 @@ if (!empty($_SESSION['alert'])) {
       <h2>Request loan</h2>
       <form method="post" class="form form--loan" action="<?= siteUri("./process/transactions.php?action=loan") ?>">
         <input type="number" class="form__input form__input--loan-amount" name="amount" />
-        <button class="form__btn form__btn--loan">&rarr;</button>
+        <button name="loanSubmit" class="form__btn form__btn--loan">&rarr;</button>
         <label class="form__label form__label--loan">Amount</label>
       </form>
     </div>
@@ -104,10 +104,10 @@ if (!empty($_SESSION['alert'])) {
     <!-- OPERATION: CLOSE -->
     <div class="operation operation--close">
       <h2>Close account</h2>
-      <form class="form form--close">
-        <input type="text" class="form__input form__input--user" />
-        <input type="password" maxlength="6" class="form__input form__input--pin" />
-        <button class="form__btn form__btn--close">&rarr;</button>
+      <form method="post" action="<?= siteUri("process/auth.php?action=closeAcc") ?>" class="form form--close">
+        <input type="text" name="name" class="form__input form__input--user" />
+        <input type="password" name="pin" maxlength="4" class="form__input form__input--pin" />
+        <button type="submit" name="closeSubmit" class="form__btn form__btn--close">&rarr;</button>
         <label class="form__label">Confirm user</label>
         <label class="form__label">Confirm PIN</label>
       </form>

@@ -39,17 +39,20 @@ class AccDetails
         if (isset($_SESSION["login"])) {
             if (self::$accountDetails === null)
                 return null;
-            return $this->formatCurrency(array_reduce(
-                Movements::getMovements($_SESSION["login"]["id"]),
-                fn($carry, $mov) =>
-                $carry + (float) $mov['amount']
-                ,
+            $movements = Movements::getMovements($_SESSION["login"]["id"]);
+            $count = count($movements);
+            if ($count === 0)
+                return $this->formatCurrency(0, self::$accountDetails["currency"]);
+            $total = array_reduce(
+                $movements,
+                fn($carry, $mov) => $carry + (float) $mov['amount'],
                 0
-            ) / count(Movements::getMovements($_SESSION["login"]["id"])), self::$accountDetails["currency"]);
-
-
+            );
+            return $this->formatCurrency($total / $count, self::$accountDetails["currency"]);
         }
+        return null;
     }
+
 
     public function getIn()
     {
@@ -61,7 +64,7 @@ class AccDetails
                     $sum += (float) $mov['amount'];
                 }
             }
-            return $this->formatCurrency($sum, self::$accountDetails["currency"]);
+            return $this->formatCurrency($sum, self::$accountDetails["currency"]) ?? 0;
 
         }
     }
@@ -78,7 +81,7 @@ class AccDetails
                     $sum += $amount;
                 }
             }
-            return $this->formatCurrency(abs($sum), $this->getCurrency());
+            return $this->formatCurrency(abs($sum), $this->getCurrency()) ?? 0;
         }
     }
 

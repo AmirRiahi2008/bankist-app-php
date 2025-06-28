@@ -54,6 +54,8 @@ if (!empty($_SESSION['alert'])) {
 
     <!-- MOVEMENTS -->
     <div class="movements">
+
+      <?php if(count($movements)): ?>
       <?php foreach ($movements as $key => $mov): ?>
         <div class="movements__row">
           <div class="movements__type movements__type--<?= $mov["type"] === "deposit" ? "deposit" : "withdrawal" ?>">
@@ -65,6 +67,9 @@ if (!empty($_SESSION['alert'])) {
           </div>
         </div>
       <?php endforeach ?>
+      <?php else: ?>
+          <p class="welcome">No Movement !!!</p>
+      <?php endif ?>
 
     </div>
 

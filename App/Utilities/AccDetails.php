@@ -26,9 +26,18 @@ class AccDetails
         $this->database = $database;
 
         if (isset($_SESSION["login"])) {
+            if (!$this->database->get("accounts_details", "*", ["user_id" => $_SESSION["login"]["id"]]))
+                $this->database->insert("accounts_details", [
+                    "user_id" => $_SESSION["login"]["id"],
+                    "balance" => $this->formatCurrency(0, "EUR"),
+                    "in" => $this->formatCurrency(0, "EUR"),
+                    "out" => $this->formatCurrency(0, "EUR"),
+                    "interest" => $this->formatCurrency(0, "EUR"),
+                ]);
             self::$accountDetails = $this->database->get("accounts_details", "*", [
                 "user_id" => $_SESSION["login"]["id"]
             ]);
+
         } else {
             self::$accountDetails = null;
         }
@@ -48,7 +57,7 @@ class AccDetails
                 fn($carry, $mov) => $carry + (float) $mov['amount'],
                 0
             );
-            return $this->formatCurrency($total / $count, self::$accountDetails["currency"]);
+            return $this->formatCurrency($total / $count, self::$accountDetails["currency"]) ?? 0;
         }
         return null;
     }
@@ -107,7 +116,7 @@ class AccDetails
             },
             0
         );
-        return $this->formatCurrency($interest, self::$accountDetails["currency"]);
+        return $this->formatCurrency($interest, self::$accountDetails["currency"]) ?? 0;
     }
 
 

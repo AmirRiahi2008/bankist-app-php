@@ -37,8 +37,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         default:
             $_SESSION['alert'] = 'Invalid action';
             redirect();
-            // redirect();
-            // echo "<script>alert('Invalid action');</script>";
             break;
     }
 }

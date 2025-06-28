@@ -29,5 +29,4 @@ switch ($action) {
         echo "Invalid Action";
         break;
 }
-// niceDD((int)$accDetails->getBalance());
 header("Location:../index.php");

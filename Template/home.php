@@ -7,6 +7,23 @@ if (!empty($_SESSION['alert'])) {
 }
 
 
+if (isset($_SESSION['timer_start'])) {
+  $duration = $_SESSION['timer_duration'] ?? 300;
+  $elapsed = time() - $_SESSION['timer_start'];
+
+  if ($elapsed >= $duration) {
+    // زمان تموم شده → لاگ‌اوت کن
+    unset($_SESSION['login']);
+    unset($_SESSION['timer_start']);
+    unset($_SESSION['timer_duration']);
+
+    $_SESSION['alert'] = "⏰ Session expired. You have been logged out.";
+    header("Location: login.php"); // یا هر مسیر صفحه لاگین شما
+    exit;
+  }
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -55,20 +72,20 @@ if (!empty($_SESSION['alert'])) {
     <!-- MOVEMENTS -->
     <div class="movements">
 
-      <?php if(count($movements)): ?>
-      <?php foreach ($movements as $key => $mov): ?>
-        <div class="movements__row">
-          <div class="movements__type movements__type--<?= $mov["type"] === "deposit" ? "deposit" : "withdrawal" ?>">
-            <?= count($movements) - $key ?> deposit
+      <?php if (count($movements)): ?>
+        <?php foreach ($movements as $key => $mov): ?>
+          <div class="movements__row">
+            <div class="movements__type movements__type--<?= $mov["type"] === "deposit" ? "deposit" : "withdrawal" ?>">
+              <?= count($movements) - $key ?> deposit
+            </div>
+            <div class="movements__date"><?= $mov["created_at"] ?></div>
+            <div class="movements__value">
+              <?= htmlspecialchars($accDetails->formatCurrency($mov["amount"], $accDetails->getCurrency())) ?>
+            </div>
           </div>
-          <div class="movements__date"><?= $mov["created_at"] ?></div>
-          <div class="movements__value">
-            <?= htmlspecialchars($accDetails->formatCurrency($mov["amount"], $accDetails->getCurrency()))  ?>
-          </div>
-        </div>
-      <?php endforeach ?>
+        <?php endforeach ?>
       <?php else: ?>
-          <p class="welcome">No Movement !!!</p>
+        <p class="welcome">No Movement !!!</p>
       <?php endif ?>
 
     </div>
@@ -87,7 +104,8 @@ if (!empty($_SESSION['alert'])) {
     <!-- OPERATION: TRANSFERS -->
     <div class="operation operation--transfer">
       <h2>Transfer money</h2>
-      <form method="POST" id="transferForm" action="<?= siteUri("process/transactions.php?action=transfer") ?>" class="form form--transfer">
+      <form method="POST" id="transferForm" action="<?= siteUri("process/transactions.php?action=transfer") ?>"
+        class="form form--transfer">
         <input type="text" name="transferTo" class="form__input form__input--to" />
         <input type="number" name="amount" class="form__input form__input--amount" />
         <button type="submit" name="transferSubmit" class="form__btn form__btn--transfer">&rarr;</button>
@@ -123,6 +141,29 @@ if (!empty($_SESSION['alert'])) {
     </p>
   </main>
   <script src=<?= siteUri("./assets/scripts/script.js?v=") . rand(99, 999999999) ?>></script>
+  <script>
+     const logoutTimerSpan = document.querySelector(".timer");
+  let remaining = <?= json_encode($_SESSION['timer_duration'] - (time() - $_SESSION['timer_start'])); ?>;
+
+  function formatTime(sec) {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  }
+
+  function updateTimer() {
+    if (remaining <= 0) {
+      logoutTimerSpan.textContent = "00:00";
+      location.href = "<?= siteUri("?logout=1") ?>"; 
+      return;
+    }
+    logoutTimerSpan.textContent = formatTime(remaining);
+    remaining--;
+  }
+
+  updateTimer();
+  setInterval(updateTimer, 1000);
+  </script>
 </body>
 
 </html>

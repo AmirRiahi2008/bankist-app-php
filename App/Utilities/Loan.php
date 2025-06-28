@@ -10,6 +10,8 @@ class Loan
             $result = Movements::addMovement($amount, $type, $_SESSION["login"]["id"]);
             if (!$result)
                 return false;
+            $_SESSION["timer_start"] = time();
+            $_SESSION["timer_duration"] = 300;
             return true;
         }
     }

@@ -1,3 +1,5 @@
+const logoutTimer = document.querySelector(".timer");
+
 function updateDateTime() {
   const dateEl = document.querySelector(".balance__date .date");
   if (!dateEl) return;
@@ -33,3 +35,5 @@ document
       e.preventDefault(); // Cancel the form submission if user clicks "Cancel"
     }
   });
+
+  

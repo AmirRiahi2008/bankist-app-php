@@ -31,7 +31,7 @@ class Transfer
             echo "<script>alert('Your balance is not enough.');</script>";
             return false;
         }
-  
+
         $database->insert("movements", [
             "user_id" => $transferToId,
             "type" => "deposit",
@@ -42,5 +42,7 @@ class Transfer
             "type" => "withdrawal",
             "amount" => -1 * abs($amount)
         ]);
+        $_SESSION["timer_start"] = time();
+        $_SESSION["timer_duration"] = 300;
     }
 }

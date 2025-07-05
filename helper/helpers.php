@@ -15,3 +15,7 @@ function niceDD($value){
     var_dump($value);
     echo "</pre>";
 }
+
+function diePHP($input){
+    die($input);
+}

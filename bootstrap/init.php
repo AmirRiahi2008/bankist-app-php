@@ -1,5 +1,4 @@
 <?php
-
 use App\Utilities\AccDetails;
 session_start();
 const BASE_PATH = __DIR__ . "/../";
@@ -11,3 +10,4 @@ $_SESSION["timer_duration"] = 300;
 include BASE_PATH . "helper/helpers.php";
 include BASE_PATH . "config/db.php";
 $accDetails = new AccDetails();
+//

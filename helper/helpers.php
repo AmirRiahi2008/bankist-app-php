@@ -5,7 +5,6 @@ function siteUri($uri = "")
     return $_ENV["BASE_URL"] . $uri;
 }
 
-
 function redirect($path = ""){
     header("Location:" . siteUri($path));
 }

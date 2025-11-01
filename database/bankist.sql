@@ -1,18 +1,4 @@
-/*
- Navicat Premium Dump SQL
 
- Source Server         : all
- Source Server Type    : MySQL
- Source Server Version : 100432 (10.4.32-MariaDB)
- Source Host           : localhost:3306
- Source Schema         : bankist
-
- Target Server Type    : MySQL
- Target Server Version : 100432 (10.4.32-MariaDB)
- File Encoding         : 65001
-
- Date: 28/06/2025 08:40:36
-*/
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;

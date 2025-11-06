@@ -12,13 +12,12 @@ if (isset($_SESSION['timer_start'])) {
   $elapsed = time() - $_SESSION['timer_start'];
 
   if ($elapsed >= $duration) {
-    // زمان تموم شده → لاگ‌اوت کن
     unset($_SESSION['login']);
     unset($_SESSION['timer_start']);
     unset($_SESSION['timer_duration']);
 
     $_SESSION['alert'] = "⏰ Session expired. You have been logged out.";
-    header("Location: login.php"); // یا هر مسیر صفحه لاگین شما
+    header("Location: login.php"); 
     exit;
   }
 }
